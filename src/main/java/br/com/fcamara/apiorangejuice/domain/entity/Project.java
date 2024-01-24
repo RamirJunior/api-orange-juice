@@ -17,9 +17,8 @@ public class Project {
     @JoinColumn(name = "id_usuario", nullable = false)
     private User user;
     private String title;
-    private List<Tag> tags;
+    private String tags;
     private String link;
     private String description;
     private String imagePath;
-
 }
