@@ -1,5 +1,6 @@
 package br.com.fcamara.apiorangejuice.services;
 
+import br.com.fcamara.apiorangejuice.domain.dto.UserRequest;
 import br.com.fcamara.apiorangejuice.domain.entity.User;
 import br.com.fcamara.apiorangejuice.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,8 @@ public class UserService {
     }
 
 
-    public User saveUser(User user) {
+    public User saveUser(UserRequest userRequest) {
+        var user = convertToUser(userRequest);
         return userRepository.save(user);
     }
 
@@ -33,4 +35,12 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    private User convertToUser(UserRequest request){
+        User user = new User();
+        user.setName(request.getName());
+        user.setLastname(request.getLastname());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        return user;
+    }
 }
