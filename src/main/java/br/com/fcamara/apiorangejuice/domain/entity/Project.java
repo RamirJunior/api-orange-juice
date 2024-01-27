@@ -16,11 +16,10 @@ public class Project {
     private String description;
     private String link;
     private String imageProject;
+    private String tags;
+    private boolean deleted = false;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    @ElementCollection
-    private List<String> tags;
 }

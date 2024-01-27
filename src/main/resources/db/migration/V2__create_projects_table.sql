@@ -4,6 +4,7 @@ CREATE TABLE projects (
     description VARCHAR(255),
     link VARCHAR(255),
     image_project VARCHAR(255),
+    tags VARCHAR(80),
     user_id BIGINT,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

@@ -19,7 +19,4 @@ public class User {
     private String email;
     private String password;
     private String profileImageAddress;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Project> projects;
 }
