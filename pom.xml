@@ -22,13 +22,12 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -38,6 +37,11 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>42.7.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
 		</dependency>
 
 		<dependency>
@@ -51,10 +55,7 @@
 			<scope>test</scope>
 		</dependency>
 
-
-
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
