@@ -12,13 +12,14 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String title;
+    private String description;
+    private String link;
+    private String imageProject;
+    private String tags;
+    private boolean deleted = false;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
-    private String title;
-    private String tags;
-    private String link;
-    private String description;
-    private String imagePath;
 }

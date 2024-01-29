@@ -43,7 +43,7 @@ public class UserService {
 
     private User convertToUser(UserRequest request) {
         User user = new User();
-        user.setName(request.getName());
+        user.setFirstname(request.getName());
         user.setLastname(request.getLastname());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
@@ -53,7 +53,7 @@ public class UserService {
     private UserResponse convertToUserResponse(User user) {
         UserResponse response = new UserResponse();
         response.setId(user.getId());
-        response.setName(user.getName());
+        response.setName(user.getFirstname());
         response.setLastname(user.getLastname());
         response.setEmail(user.getEmail());
         response.setPassword(user.getPassword());
