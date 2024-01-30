@@ -26,10 +26,4 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
-
-    @GetMapping
-    public ResponseEntity<List<UserResponse>> getAllUsers() {
-        var userList = userService.findAll();
-        return ResponseEntity.status(HttpStatus.OK).body(userList);
-    }
 }

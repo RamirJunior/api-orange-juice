@@ -1,12 +1,14 @@
 package br.com.fcamara.apiorangejuice.services;
 
 import br.com.fcamara.apiorangejuice.api.dto.ProjectRequest;
+import br.com.fcamara.apiorangejuice.api.dto.ProjectResponse;
+import br.com.fcamara.apiorangejuice.api.utils.ProjectDtoConverter;
 import br.com.fcamara.apiorangejuice.domain.entity.Project;
 import br.com.fcamara.apiorangejuice.domain.entity.User;
 import br.com.fcamara.apiorangejuice.repositories.ProjectRepository;
-import br.com.fcamara.apiorangejuice.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,60 +21,49 @@ import java.util.stream.Collectors;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
+    private final ProjectDtoConverter projectConverter;
 
-    public Project saveProject(ProjectRequest projectRequest) {
-        var project = convertToProject(projectRequest);
+    public Project saveProject(Long userId, ProjectRequest projectRequest) {
+        var project = projectConverter.toProject(userId, projectRequest);
         return projectRepository.save(project);
     }
 
-    public List<Project> findProjects() {
-        return projectRepository.findByDeleted(false);
+    public List<ProjectResponse> findProjects() {
+        var projectList = projectRepository.findByDeleted(false);
+        return projectConverter.toProjectResponseList(projectList);
     }
 
     public List<Project> findUserProjects(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
+        Optional<User> user = userService.findById(userId);
         var userProjectList = projectRepository.findByUser(user.get());
         return userProjectList.stream()
                 .filter(project -> !project.isDeleted())
                 .collect(Collectors.toList());
     }
 
-    public boolean deleteProject(Long projectId) {
+    public Optional<Project> updateProject(Long userId, Project project) {
+        Optional<Project> toBeUpdated = projectRepository.findById(project.getId());
+        if (toBeUpdated.isEmpty())
+            return toBeUpdated;
+
+        if (belongToUser(userId, toBeUpdated.get()))
+            BeanUtils.copyProperties(toBeUpdated, project, "id");
+
+        var updatedproject = projectRepository.save(project);
+        return Optional.of(updatedproject);
+    }
+
+    public boolean deleteProject(Long userId, Long projectId) {
         Optional<Project> foundProject = projectRepository.findById(projectId);
-        if (foundProject.isEmpty()) return false;
+        if (!belongToUser(userId, foundProject.get())) return false;
 
         var project = foundProject.get();
         project.setDeleted(true);
         return project.isDeleted();
     }
 
-    private Project convertToProject(ProjectRequest request) {
-        User user = getUserData(request);
-        var tagList = getFormattedTags(request.getTags());
-        Project project = new Project();
-        project.setTitle(request.getTitle());
-        project.setDescription(request.getDescription());
-        project.setLink(request.getLink());
-        project.setImageProject(request.getImageProject());
-        project.setTags(tagList);
-        project.setUser(user);
-        return project;
-    }
-
-    private User getUserData(ProjectRequest request) {
-        Optional<User> userFound = userRepository.findById(request.getUserId());
-        return userFound.get();
-    }
-
-    private String getFormattedTags(List<String> tags) {
-        if (tags.isEmpty()) return null;
-
-        var tagList = tags.stream()
-                .map(String::trim)
-                .map(String::toLowerCase)
-                .toList()
-                .toString();
-        return tagList.substring(1, tagList.length() - 1);
+    private boolean belongToUser(Long userId, Project project) {
+        return userId == project.getUser().getId();
     }
 }
