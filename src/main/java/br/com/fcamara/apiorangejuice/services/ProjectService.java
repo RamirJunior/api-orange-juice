@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -34,12 +33,13 @@ public class ProjectService {
         return projectConverter.toProjectResponseList(projectList);
     }
 
-    public List<Project> findUserProjects(Long userId) {
+    public List<ProjectResponse> findUserProjects(Long userId) {
         Optional<User> user = userService.findById(userId);
-        var userProjectList = projectRepository.findByUser(user.get());
-        return userProjectList.stream()
+        var allUserProjects = projectRepository.findByUser(user.get());
+        var projectList = allUserProjects.stream()
                 .filter(project -> !project.isDeleted())
-                .collect(Collectors.toList());
+                .toList();
+        return projectConverter.toProjectResponseList(projectList);
     }
 
     public Optional<Project> updateProject(Long userId, Project project) {

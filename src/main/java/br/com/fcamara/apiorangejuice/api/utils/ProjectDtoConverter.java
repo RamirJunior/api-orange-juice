@@ -9,6 +9,7 @@ import br.com.fcamara.apiorangejuice.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,20 +32,22 @@ public class ProjectDtoConverter {
         project.setImageProject(request.getImageProject());
         project.setTags(tagList);
         project.setUser(user.get());
+        project.setCreatedAt(LocalDate.now());
         return project;
     }
 
     public ProjectResponse toProjectResponse(Project project) {
-        ProjectResponse publicProject = new ProjectResponse();
+        ProjectResponse projectResponse = new ProjectResponse();
         UserResponse userResponse = userConverter.toUserResponse(project.getUser());
 
-        publicProject.setId(project.getId());
-        publicProject.setTitle(project.getTitle());
-        publicProject.setDescription(project.getDescription());
-        publicProject.setImageProject(project.getImageProject());
-        publicProject.setTags(project.getTags());
-        publicProject.setUser(userResponse);
-        return publicProject;
+        projectResponse.setId(project.getId());
+        projectResponse.setTitle(project.getTitle());
+        projectResponse.setDescription(project.getDescription());
+        projectResponse.setImageProject(project.getImageProject());
+        projectResponse.setTags(project.getTags());
+        projectResponse.setUser(userResponse);
+        projectResponse.setCreatedAt(project.getCreatedAt());
+        return projectResponse;
     }
 
     public List<ProjectResponse> toProjectResponseList(List<Project> projectList) {
