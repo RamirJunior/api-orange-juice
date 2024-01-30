@@ -33,27 +33,22 @@ public class ProjectController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<Project>> findUserProjects(@PathVariable Long userId) {
+    public ResponseEntity<List<ProjectResponse>> findUserProjects(@PathVariable Long userId) {
         var userProjects = projectService.findUserProjects(userId);
         return ResponseEntity.status(HttpStatus.OK).body(userProjects);
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<Project> updateProject(@PathVariable Long userId,
-                                                 @Valid @RequestBody Project project) {
+    public ResponseEntity<Project> updateProject(@PathVariable Long userId, @Valid @RequestBody Project project) {
         var updatedProject = projectService.updateProject(userId, project);
-        if (updatedProject.isEmpty())
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-
+        if (updatedProject.isEmpty()) return ResponseEntity.status(HttpStatus.CONFLICT).build();
         return ResponseEntity.status(HttpStatus.OK).body(updatedProject.get());
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity deleteProject(@PathVariable Long projectId, @PathVariable Long userId) {
+    @DeleteMapping("/{userId}/{projectId}")
+    public ResponseEntity deleteProject(@PathVariable Long userId, @PathVariable Long projectId) {
         var response = projectService.deleteProject(userId, projectId);
-        if (!response)
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
+        if (!response) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
