@@ -1,9 +1,7 @@
-package br.com.fcamara.apiorangejuice.domain.entity;
+package br.com.fcamara.apiorangejuice.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 @Entity

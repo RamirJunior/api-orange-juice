@@ -1,4 +1,4 @@
-package br.com.fcamara.apiorangejuice.api.dto;
+package br.com.fcamara.apiorangejuice.api.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserRequest {
     @NotBlank(message = "Name is required.")
-    private String name;
+    private String firstname;
 
     @NotBlank(message = "Lastname is required.")
     private String lastname;

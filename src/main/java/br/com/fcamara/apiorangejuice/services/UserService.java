@@ -1,9 +1,9 @@
 package br.com.fcamara.apiorangejuice.services;
 
-import br.com.fcamara.apiorangejuice.api.dto.UserRequest;
-import br.com.fcamara.apiorangejuice.api.dto.UserResponse;
+import br.com.fcamara.apiorangejuice.api.dtos.UserRequest;
+import br.com.fcamara.apiorangejuice.api.dtos.UserResponse;
 import br.com.fcamara.apiorangejuice.api.utils.UserDtoConverter;
-import br.com.fcamara.apiorangejuice.domain.entity.User;
+import br.com.fcamara.apiorangejuice.domain.entities.User;
 import br.com.fcamara.apiorangejuice.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
