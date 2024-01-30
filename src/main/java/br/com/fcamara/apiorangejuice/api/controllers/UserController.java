@@ -1,15 +1,13 @@
 package br.com.fcamara.apiorangejuice.api.controllers;
 
-import br.com.fcamara.apiorangejuice.api.dto.UserRequest;
-import br.com.fcamara.apiorangejuice.api.dto.UserResponse;
+import br.com.fcamara.apiorangejuice.api.dtos.UserRequest;
+import br.com.fcamara.apiorangejuice.api.dtos.UserResponse;
 import br.com.fcamara.apiorangejuice.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

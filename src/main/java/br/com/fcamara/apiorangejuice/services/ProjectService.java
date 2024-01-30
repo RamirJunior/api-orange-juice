@@ -1,10 +1,10 @@
 package br.com.fcamara.apiorangejuice.services;
 
-import br.com.fcamara.apiorangejuice.api.dto.ProjectRequest;
-import br.com.fcamara.apiorangejuice.api.dto.ProjectResponse;
+import br.com.fcamara.apiorangejuice.api.dtos.ProjectRequest;
+import br.com.fcamara.apiorangejuice.api.dtos.ProjectResponse;
 import br.com.fcamara.apiorangejuice.api.utils.ProjectDtoConverter;
-import br.com.fcamara.apiorangejuice.domain.entity.Project;
-import br.com.fcamara.apiorangejuice.domain.entity.User;
+import br.com.fcamara.apiorangejuice.domain.entities.Project;
+import br.com.fcamara.apiorangejuice.domain.entities.User;
 import br.com.fcamara.apiorangejuice.repositories.ProjectRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

@@ -1,10 +1,10 @@
 package br.com.fcamara.apiorangejuice.api.utils;
 
-import br.com.fcamara.apiorangejuice.api.dto.ProjectRequest;
-import br.com.fcamara.apiorangejuice.api.dto.ProjectResponse;
-import br.com.fcamara.apiorangejuice.api.dto.UserResponse;
-import br.com.fcamara.apiorangejuice.domain.entity.Project;
-import br.com.fcamara.apiorangejuice.domain.entity.User;
+import br.com.fcamara.apiorangejuice.api.dtos.ProjectRequest;
+import br.com.fcamara.apiorangejuice.api.dtos.ProjectResponse;
+import br.com.fcamara.apiorangejuice.api.dtos.UserResponse;
+import br.com.fcamara.apiorangejuice.domain.entities.Project;
+import br.com.fcamara.apiorangejuice.domain.entities.User;
 import br.com.fcamara.apiorangejuice.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
