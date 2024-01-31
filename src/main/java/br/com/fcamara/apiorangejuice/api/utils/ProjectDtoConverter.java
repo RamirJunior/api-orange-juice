@@ -3,7 +3,6 @@ package br.com.fcamara.apiorangejuice.api.utils;
 import br.com.fcamara.apiorangejuice.api.dtos.project.ProjectOwner;
 import br.com.fcamara.apiorangejuice.api.dtos.project.ProjectRequest;
 import br.com.fcamara.apiorangejuice.api.dtos.project.ProjectResponse;
-import br.com.fcamara.apiorangejuice.api.dtos.user.UserResponse;
 import br.com.fcamara.apiorangejuice.domain.entities.Project;
 import br.com.fcamara.apiorangejuice.domain.entities.User;
 import br.com.fcamara.apiorangejuice.services.UserService;
