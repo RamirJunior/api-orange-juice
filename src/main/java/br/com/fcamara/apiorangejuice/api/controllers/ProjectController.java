@@ -1,7 +1,7 @@
 package br.com.fcamara.apiorangejuice.api.controllers;
 
-import br.com.fcamara.apiorangejuice.api.dtos.ProjectRequest;
-import br.com.fcamara.apiorangejuice.api.dtos.ProjectResponse;
+import br.com.fcamara.apiorangejuice.api.dtos.project.ProjectRequest;
+import br.com.fcamara.apiorangejuice.api.dtos.project.ProjectResponse;
 import br.com.fcamara.apiorangejuice.domain.entities.Project;
 import br.com.fcamara.apiorangejuice.services.ProjectService;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ public class ProjectController {
 
     @PostMapping("/{userId}")
     @CacheEvict(value = "userProjectsCache", allEntries = true)
-    public ResponseEntity<Project> saveProject(@PathVariable Long userId,
+    public ResponseEntity<ProjectResponse> saveProject(@PathVariable Long userId,
                                                @Valid @RequestBody ProjectRequest projectRequest) {
         var savedProject = projectService.saveProject(userId, projectRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);

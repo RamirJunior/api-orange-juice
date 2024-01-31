@@ -1,7 +1,7 @@
 package br.com.fcamara.apiorangejuice.services;
 
-import br.com.fcamara.apiorangejuice.api.dtos.ProjectRequest;
-import br.com.fcamara.apiorangejuice.api.dtos.ProjectResponse;
+import br.com.fcamara.apiorangejuice.api.dtos.project.ProjectRequest;
+import br.com.fcamara.apiorangejuice.api.dtos.project.ProjectResponse;
 import br.com.fcamara.apiorangejuice.api.utils.ProjectDtoConverter;
 import br.com.fcamara.apiorangejuice.domain.entities.Project;
 import br.com.fcamara.apiorangejuice.domain.entities.User;
@@ -23,9 +23,10 @@ public class ProjectService {
     private final UserService userService;
     private final ProjectDtoConverter projectConverter;
 
-    public Project saveProject(Long userId, ProjectRequest projectRequest) {
+    public ProjectResponse saveProject(Long userId, ProjectRequest projectRequest) {
         var project = projectConverter.toProject(userId, projectRequest);
-        return projectRepository.save(project);
+        var savedProject = projectRepository.save(project);
+        return projectConverter.toProjectResponse(savedProject);
     }
 
     public List<ProjectResponse> findProjects() {

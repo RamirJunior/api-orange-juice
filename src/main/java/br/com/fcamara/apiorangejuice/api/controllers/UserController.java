@@ -1,12 +1,17 @@
 package br.com.fcamara.apiorangejuice.api.controllers;
 
-import br.com.fcamara.apiorangejuice.api.dtos.UserRequest;
-import br.com.fcamara.apiorangejuice.api.dtos.UserResponse;
+import br.com.fcamara.apiorangejuice.api.dtos.login.LoginRequest;
+import br.com.fcamara.apiorangejuice.api.dtos.login.LoginResponse;
+import br.com.fcamara.apiorangejuice.api.dtos.user.UserRequest;
+import br.com.fcamara.apiorangejuice.api.dtos.user.UserResponse;
+import br.com.fcamara.apiorangejuice.domain.entities.User;
+import br.com.fcamara.apiorangejuice.services.TokenService;
 import br.com.fcamara.apiorangejuice.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,13 +20,21 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final TokenService tokenService;
+    private final AuthenticationManager authenticationManager;
 
-    @PostMapping
-    public ResponseEntity<UserResponse> saveUser(@Valid @RequestBody UserRequest userRequest) {
-        UserResponse savedUser = userService.saveUser(userRequest);
-        if (savedUser == null)
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-
+    @PostMapping("/register")
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRequest userRequest) {
+        UserResponse savedUser = userService.register(userRequest);
+        if (savedUser == null) return ResponseEntity.status(HttpStatus.CONFLICT).build();
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest){
+        var usernamePassword = tokenService.getAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword());
+        var auth = authenticationManager.authenticate(usernamePassword);
+        var token = tokenService.createToken((User) auth.getPrincipal());
+        return ResponseEntity.status(HttpStatus.OK).body(token);
     }
 }

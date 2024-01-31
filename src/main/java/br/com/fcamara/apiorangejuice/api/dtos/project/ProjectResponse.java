@@ -1,5 +1,6 @@
-package br.com.fcamara.apiorangejuice.api.dtos;
+package br.com.fcamara.apiorangejuice.api.dtos.project;
 
+import br.com.fcamara.apiorangejuice.api.dtos.user.UserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,6 @@ public class ProjectResponse {
     private String link;
     private String imageProject;
     private String tags;
-    private UserResponse user;
+    private ProjectOwner user;
     private LocalDate createdAt;
 }
