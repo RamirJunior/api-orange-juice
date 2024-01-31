@@ -27,6 +27,7 @@ public class ProjectDtoConverter {
         var tagList = getStringTags(request.getTags());
 
         Project project = new Project();
+        project.setId(request.getId());
         project.setTitle(request.getTitle());
         project.setDescription(request.getDescription());
         project.setLink(request.getLink());

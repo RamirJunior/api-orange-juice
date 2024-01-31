@@ -45,10 +45,12 @@ public class ProjectController {
 
     @PutMapping("/{userId}")
     @CachePut(value = "userProjectsCache")
-    public ResponseEntity<Project> updateProject(@PathVariable Long userId, @Valid @RequestBody Project project) {
-        var updatedProject = projectService.updateProject(userId, project);
-        if (updatedProject.isEmpty()) return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        return ResponseEntity.status(HttpStatus.OK).body(updatedProject.get());
+    public ResponseEntity<ProjectResponse> updateProject(@PathVariable Long userId,
+                                                 @Valid @RequestBody ProjectRequest projectRequest) {
+        var updatedProject = projectService.updateProject(userId, projectRequest);
+        return updatedProject.map(
+                projectResponse -> ResponseEntity.status(HttpStatus.OK).body(projectResponse))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.CONFLICT).build());
     }
 
     @DeleteMapping("/{userId}/{projectId}")
