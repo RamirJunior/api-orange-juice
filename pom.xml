@@ -88,6 +88,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>api-orange-squad14-v1.0</finalName>
 	</build>
 
 </project>
