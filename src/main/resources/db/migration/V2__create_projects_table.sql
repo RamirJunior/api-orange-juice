@@ -6,5 +6,6 @@ CREATE TABLE projects (
     image_project VARCHAR(255),
     tags VARCHAR(80),
     user_id BIGINT,
+    deleted BOOLEAN DEFAULT false,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

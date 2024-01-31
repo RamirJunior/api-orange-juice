@@ -1,4 +1,4 @@
-package br.com.fcamara.apiorangejuice.api.dtos;
+package br.com.fcamara.apiorangejuice.api.dtos.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -19,5 +19,8 @@ public class UserRequest {
     @Email
     @NotBlank(message = "Email is required.")
     private String email;
+
+    @NotBlank(message = "Password is required.")
     private String password;
+    private String profileImageUser;
 }
