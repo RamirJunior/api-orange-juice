@@ -2,7 +2,6 @@ package br.com.fcamara.apiorangejuice.api.controllers;
 
 import br.com.fcamara.apiorangejuice.api.dtos.project.ProjectRequest;
 import br.com.fcamara.apiorangejuice.api.dtos.project.ProjectResponse;
-import br.com.fcamara.apiorangejuice.domain.entities.Project;
 import br.com.fcamara.apiorangejuice.services.ProjectService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,7 @@ public class ProjectController {
     @PostMapping("/{userId}")
     @CacheEvict(value = "userProjectsCache", allEntries = true)
     public ResponseEntity<ProjectResponse> saveProject(@PathVariable Long userId,
-                                               @Valid @RequestBody ProjectRequest projectRequest) {
+                                                       @Valid @RequestBody ProjectRequest projectRequest) {
         var savedProject = projectService.saveProject(userId, projectRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);
     }
@@ -46,10 +45,10 @@ public class ProjectController {
     @PutMapping("/{userId}")
     @CachePut(value = "userProjectsCache")
     public ResponseEntity<ProjectResponse> updateProject(@PathVariable Long userId,
-                                                 @Valid @RequestBody ProjectRequest projectRequest) {
+                                                         @Valid @RequestBody ProjectRequest projectRequest) {
         var updatedProject = projectService.updateProject(userId, projectRequest);
         return updatedProject.map(
-                projectResponse -> ResponseEntity.status(HttpStatus.OK).body(projectResponse))
+                        projectResponse -> ResponseEntity.status(HttpStatus.OK).body(projectResponse))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.CONFLICT).build());
     }
 

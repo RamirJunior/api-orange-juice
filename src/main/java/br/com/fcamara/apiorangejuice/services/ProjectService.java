@@ -49,27 +49,24 @@ public class ProjectService {
         var toBeUpdatedproject = foundProject.get();
 
         if (belongToUser(userId, toBeUpdatedproject.getUser().getId()))
-            BeanUtils.copyProperties(project, toBeUpdatedproject,"id");
+            BeanUtils.copyProperties(project, toBeUpdatedproject, "id");
 
         var updatedProject = projectRepository.save(toBeUpdatedproject);
         var projectResponse = projectConverter.toProjectResponse(updatedProject);
         return Optional.of(projectResponse);
     }
 
-    private static boolean belongToUser(Long userIdReceived, Long userIdProject) {
-        return userIdReceived == userIdProject;
-    }
-
     public boolean deleteProject(Long userId, Long projectId) {
         Optional<Project> foundProject = projectRepository.findById(projectId);
-        if (!belongToUser(userId, foundProject.get())) return false;
+        var toBeDeletedproject = foundProject.get();
+        if (!belongToUser(userId, toBeDeletedproject.getUser().getId())) return false;
 
         var project = foundProject.get();
         project.setDeleted(true);
         return project.isDeleted();
     }
 
-    private boolean belongToUser(Long userId, Project project) {
-        return userId == project.getUser().getId();
+    private static boolean belongToUser(Long userIdReceived, Long userIdProject) {
+        return userIdReceived == userIdProject;
     }
 }
