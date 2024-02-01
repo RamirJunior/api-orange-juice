@@ -2,11 +2,13 @@ package br.com.fcamara.apiorangejuice.services;
 
 import br.com.fcamara.apiorangejuice.api.dtos.user.UserRequest;
 import br.com.fcamara.apiorangejuice.api.dtos.user.UserResponse;
-import br.com.fcamara.apiorangejuice.api.utils.UserDtoConverter;
+import br.com.fcamara.apiorangejuice.api.utils.converters.UserDtoConverter;
 import br.com.fcamara.apiorangejuice.domain.entities.User;
+import br.com.fcamara.apiorangejuice.exceptions.businessexceptions.UserAlreadyRegisteredException;
+import br.com.fcamara.apiorangejuice.exceptions.businessexceptions.UserNotFoundException;
 import br.com.fcamara.apiorangejuice.repositories.UserRepository;
+import br.com.fcamara.apiorangejuice.api.utils.Constants;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,7 +27,7 @@ public class UserService {
     public UserResponse register(UserRequest userRequest) {
         var existingUser = userRepository.findByEmail(userRequest.getEmail());
         if (existingUser != null)
-            throw new DataIntegrityViolationException("Email already registered.");
+            throw new UserAlreadyRegisteredException(Constants.EMAIL_REGISTERED);
 
         userRequest.setPassword(encrypt(userRequest.getPassword()));
         var user = converter.toUser(userRequest);
@@ -34,7 +36,11 @@ public class UserService {
     }
 
     public Optional<User> findById(Long userId) {
-        return userRepository.findById(userId);
+        var foundUser = userRepository.findById(userId);
+        if(foundUser.isEmpty())
+            throw new UserNotFoundException(Constants.USER_NOT_FOUND);
+
+        return foundUser;
     }
 
     public UserDetails findByEmail(String login) {

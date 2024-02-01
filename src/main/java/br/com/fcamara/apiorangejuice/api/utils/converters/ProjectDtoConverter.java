@@ -1,4 +1,4 @@
-package br.com.fcamara.apiorangejuice.api.utils;
+package br.com.fcamara.apiorangejuice.api.utils.converters;
 
 import br.com.fcamara.apiorangejuice.api.dtos.project.ProjectOwner;
 import br.com.fcamara.apiorangejuice.api.dtos.project.ProjectRequest;

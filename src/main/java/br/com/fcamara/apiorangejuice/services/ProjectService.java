@@ -1,11 +1,13 @@
 package br.com.fcamara.apiorangejuice.services;
 
+import br.com.fcamara.apiorangejuice.api.utils.converters.ProjectDtoConverter;
 import br.com.fcamara.apiorangejuice.api.dtos.project.ProjectRequest;
 import br.com.fcamara.apiorangejuice.api.dtos.project.ProjectResponse;
-import br.com.fcamara.apiorangejuice.api.utils.ProjectDtoConverter;
 import br.com.fcamara.apiorangejuice.domain.entities.Project;
 import br.com.fcamara.apiorangejuice.domain.entities.User;
+import br.com.fcamara.apiorangejuice.exceptions.businessexceptions.UnauthorizedProjectResourceException;
 import br.com.fcamara.apiorangejuice.repositories.ProjectRepository;
+import br.com.fcamara.apiorangejuice.api.utils.Constants;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -48,9 +50,10 @@ public class ProjectService {
         Optional<Project> foundProject = projectRepository.findById(project.getId());
         var toBeUpdatedproject = foundProject.get();
 
-        if (belongToUser(userId, toBeUpdatedproject.getUser().getId()))
-            BeanUtils.copyProperties(project, toBeUpdatedproject, "id");
+        if (!belongToUser(userId, toBeUpdatedproject.getUser().getId()))
+            throw new UnauthorizedProjectResourceException(Constants.UNAUTHORIZED_PROJECT);
 
+        BeanUtils.copyProperties(project, toBeUpdatedproject, "id");
         var updatedProject = projectRepository.save(toBeUpdatedproject);
         var projectResponse = projectConverter.toProjectResponse(updatedProject);
         return Optional.of(projectResponse);
@@ -59,7 +62,8 @@ public class ProjectService {
     public boolean deleteProject(Long userId, Long projectId) {
         Optional<Project> foundProject = projectRepository.findById(projectId);
         var toBeDeletedproject = foundProject.get();
-        if (!belongToUser(userId, toBeDeletedproject.getUser().getId())) return false;
+        if (!belongToUser(userId, toBeDeletedproject.getUser().getId()))
+            throw new UnauthorizedProjectResourceException(Constants.UNAUTHORIZED_PROJECT);
 
         var project = foundProject.get();
         project.setDeleted(true);
