@@ -24,12 +24,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
+@Tag(name = "UserController", description = "Endpoints related to users")
 public class UserController {
 
     private final UserService userService;
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
 
+    @Operation(summary = "Register a new user", description = "Endpoint to register a new user in the application.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User registered successfully"),
+            @ApiResponse(responseCode = "409", description = "Conflict - user already exists")
+    })
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRequest userRequest) {
         UserResponse savedUser = userService.register(userRequest);
@@ -37,6 +43,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
+    @Operation(summary = "Authenticate a user", description = "Endpoint to authenticate a user in the application and obtain an access token.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User authenticated successfully and token generated"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid credentials")
+    })
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         var usernamePassword = tokenService.getAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
