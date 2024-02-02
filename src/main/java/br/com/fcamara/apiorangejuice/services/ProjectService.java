@@ -1,13 +1,12 @@
 package br.com.fcamara.apiorangejuice.services;
 
-import br.com.fcamara.apiorangejuice.api.utils.converters.ProjectDtoConverter;
 import br.com.fcamara.apiorangejuice.api.dtos.project.ProjectRequest;
 import br.com.fcamara.apiorangejuice.api.dtos.project.ProjectResponse;
+import br.com.fcamara.apiorangejuice.api.utils.Constants;
+import br.com.fcamara.apiorangejuice.api.utils.converters.ProjectDtoConverter;
 import br.com.fcamara.apiorangejuice.domain.entities.Project;
-import br.com.fcamara.apiorangejuice.domain.entities.User;
 import br.com.fcamara.apiorangejuice.exceptions.businessexceptions.UnauthorizedProjectResourceException;
 import br.com.fcamara.apiorangejuice.repositories.ProjectRepository;
-import br.com.fcamara.apiorangejuice.api.utils.Constants;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -25,8 +24,9 @@ public class ProjectService {
     private final UserService userService;
     private final ProjectDtoConverter projectConverter;
 
-    public ProjectResponse saveProject(Long userId, ProjectRequest projectRequest) {
-        var project = projectConverter.toProject(userId, projectRequest);
+    public ProjectResponse saveProject(ProjectRequest projectRequest) {
+        var currentUser = userService.getCurrentUserData();
+        var project = projectConverter.toProject(currentUser.getId(), projectRequest);
         var savedProject = projectRepository.save(project);
         return projectConverter.toProjectResponse(savedProject);
     }
@@ -36,21 +36,22 @@ public class ProjectService {
         return projectConverter.toProjectResponseList(projectList);
     }
 
-    public List<ProjectResponse> findUserProjects(Long userId) {
-        Optional<User> user = userService.findById(userId);
-        var allUserProjects = projectRepository.findByUser(user.get());
+    public List<ProjectResponse> findUserProjects() {
+        var currentUser = userService.getCurrentUserData();
+        var allUserProjects = projectRepository.findByUser(currentUser);
         var projectList = allUserProjects.stream()
                 .filter(project -> !project.isDeleted())
                 .toList();
         return projectConverter.toProjectResponseList(projectList);
     }
 
-    public Optional<ProjectResponse> updateProject(Long userId, ProjectRequest projectRequest) {
-        var project = projectConverter.toProject(userId, projectRequest);
+    public Optional<ProjectResponse> updateProject(ProjectRequest projectRequest) {
+        var currentUser = userService.getCurrentUserData();
+        var project = projectConverter.toProject(currentUser.getId(), projectRequest);
         Optional<Project> foundProject = projectRepository.findById(project.getId());
         var toBeUpdatedproject = foundProject.get();
 
-        if (!belongToUser(userId, toBeUpdatedproject.getUser().getId()))
+        if (!belongToUser(currentUser.getId(), toBeUpdatedproject.getUser().getId()))
             throw new UnauthorizedProjectResourceException(Constants.UNAUTHORIZED_PROJECT);
 
         BeanUtils.copyProperties(project, toBeUpdatedproject, "id");
@@ -59,10 +60,11 @@ public class ProjectService {
         return Optional.of(projectResponse);
     }
 
-    public boolean deleteProject(Long userId, Long projectId) {
+    public boolean deleteProject(Long projectId) {
+        var current = userService.getCurrentUserData();
         Optional<Project> foundProject = projectRepository.findById(projectId);
         var toBeDeletedproject = foundProject.get();
-        if (!belongToUser(userId, toBeDeletedproject.getUser().getId()))
+        if (!belongToUser(current.getId(), toBeDeletedproject.getUser().getId()))
             throw new UnauthorizedProjectResourceException(Constants.UNAUTHORIZED_PROJECT);
 
         var project = foundProject.get();
@@ -70,7 +72,7 @@ public class ProjectService {
         return project.isDeleted();
     }
 
-    private static boolean belongToUser(Long userIdReceived, Long userIdProject) {
-        return userIdReceived == userIdProject;
+    private boolean belongToUser(Long currentUserId, Long userIdProject) {
+        return currentUserId == userIdProject;
     }
 }

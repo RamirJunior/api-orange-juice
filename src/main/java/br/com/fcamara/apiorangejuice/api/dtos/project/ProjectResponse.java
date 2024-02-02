@@ -1,6 +1,5 @@
 package br.com.fcamara.apiorangejuice.api.dtos.project;
 
-import br.com.fcamara.apiorangejuice.api.dtos.user.UserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

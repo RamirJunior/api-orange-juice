@@ -13,8 +13,5 @@ public class Constants {
     public static final String REQUIRED_FIRSTNAME_MESSAGE = "Firstname is required";
     public static final String REQUIRED_LASTNAME_MESSAGE = "Lastname is required";
     public static final String INVALID_LOGIN = "Email or password invalid.";
-
-
-
-
+    public static final String ERROR_JWT_CREATION_MESSAGE = "Something wrong during token creation.";
 }

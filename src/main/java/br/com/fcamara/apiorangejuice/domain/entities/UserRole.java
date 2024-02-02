@@ -1,5 +1,8 @@
 package br.com.fcamara.apiorangejuice.domain.entities;
 
+import lombok.Getter;
+
+@Getter
 public enum UserRole {
 
     USER("user");
@@ -8,9 +11,5 @@ public enum UserRole {
 
     UserRole(String role){
         this.role = role;
-    }
-
-    public String getRole(){
-        return role;
     }
 }

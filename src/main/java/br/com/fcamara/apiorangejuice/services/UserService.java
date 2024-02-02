@@ -9,6 +9,8 @@ import br.com.fcamara.apiorangejuice.exceptions.businessexceptions.UserNotFoundE
 import br.com.fcamara.apiorangejuice.repositories.UserRepository;
 import br.com.fcamara.apiorangejuice.api.utils.Constants;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,8 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@Transactional
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
 
@@ -35,8 +37,9 @@ public class UserService {
         return converter.toUserResponse(savedUser);
     }
 
-    public Optional<User> findById(Long userId) {
-        var foundUser = userRepository.findById(userId);
+    public Optional<User> findById() {
+        var currentUser = getCurrentUserData();
+        var foundUser = userRepository.findById(currentUser.getId());
         if(foundUser.isEmpty())
             throw new UserNotFoundException(Constants.USER_NOT_FOUND);
 
@@ -49,5 +52,12 @@ public class UserService {
 
     private String encrypt(String password) {
         return new BCryptPasswordEncoder().encode(password);
+    }
+
+    public User getCurrentUserData() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated())
+            return (User) authentication.getPrincipal();
+        return null;
     }
 }
