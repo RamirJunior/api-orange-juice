@@ -22,7 +22,7 @@ public class ProjectDtoConverter {
     private final UserDtoConverter userConverter;
 
     public Project toProject(Long userId, ProjectRequest request) {
-        Optional<User> user = userService.findById();
+        Optional<User> user = userService.findById(userId);
         var tagList = getStringTags(request.getTags());
 
         Project project = new Project();
@@ -44,6 +44,7 @@ public class ProjectDtoConverter {
         projectResponse.setId(project.getId());
         projectResponse.setTitle(project.getTitle());
         projectResponse.setDescription(project.getDescription());
+        projectResponse.setLink(project.getLink());
         projectResponse.setImageProject(project.getImageProject());
         projectResponse.setTags(project.getTags());
         projectResponse.setUser(userResponse);

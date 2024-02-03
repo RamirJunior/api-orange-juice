@@ -14,44 +14,46 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static br.com.fcamara.apiorangejuice.api.utils.Constants.*;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/project")
+@RequestMapping(PROJECT_CONTROLLER_MAPPING_ROUTE)
 public class ProjectController {
 
     private final ProjectService projectService;
 
     @PostMapping
-    @CacheEvict(value = "userProjectsCache", allEntries = true)
+    @CacheEvict(value = USER_PROJECTS_CACHE, allEntries = true)
     public ResponseEntity<ProjectResponse> saveProject(@Valid @RequestBody ProjectRequest projectRequest) {
         var savedProject = projectService.saveProject(projectRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProjectResponse>> findProjects() {
-        var projectList = projectService.findProjects();
+    @GetMapping(GET_ALL_PROJECTS_ROUTE)
+    public ResponseEntity<List<ProjectResponse>> findAllProjects() {
+        var projectList = projectService.findAllProjects();
         return ResponseEntity.status(HttpStatus.OK).body(projectList);
     }
 
     @GetMapping
-    @Cacheable(value = "userProjectsCache")
+    @Cacheable(value = USER_PROJECTS_CACHE)
     public ResponseEntity<List<ProjectResponse>> findUserProjects() {
         var userProjects = projectService.findUserProjects();
         return ResponseEntity.status(HttpStatus.OK).body(userProjects);
     }
 
     @PutMapping
-    @CachePut(value = "userProjectsCache")
-    public ResponseEntity<ProjectResponse> updateProject(@Valid @RequestBody ProjectRequest projectRequest) {
+    @CachePut(value = USER_PROJECTS_CACHE)
+    public ResponseEntity<ProjectResponse> updateProject(@RequestBody ProjectRequest projectRequest) {
         var updatedProject = projectService.updateProject(projectRequest);
         return updatedProject.map(
-                        projectResponse -> ResponseEntity.status(HttpStatus.OK).body(projectResponse))
+                projectResponse -> ResponseEntity.status(HttpStatus.OK).body(projectResponse))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.CONFLICT).build());
     }
 
-    @DeleteMapping("/{projectId}")
-    @CachePut(value = "userProjectsCache")
+    @DeleteMapping(DELETE_PROJECT_ROUTE)
+    @CachePut(value = USER_PROJECTS_CACHE)
     public ResponseEntity deleteProject(@PathVariable Long projectId) {
         var response = projectService.deleteProject(projectId);
         if (!response) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

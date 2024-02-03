@@ -20,25 +20,25 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProjectService {
 
+    private final ProjectDtoConverter projectConverter;
     private final ProjectRepository projectRepository;
     private final UserService userService;
-    private final ProjectDtoConverter projectConverter;
 
     public ProjectResponse saveProject(ProjectRequest projectRequest) {
-        var currentUser = userService.getCurrentUserData();
-        var project = projectConverter.toProject(currentUser.getId(), projectRequest);
+        var user = userService.getCurrentUser();
+        var project = projectConverter.toProject(user.getId(), projectRequest);
         var savedProject = projectRepository.save(project);
         return projectConverter.toProjectResponse(savedProject);
     }
 
-    public List<ProjectResponse> findProjects() {
+    public List<ProjectResponse> findAllProjects() {
         var projectList = projectRepository.findByDeleted(false);
         return projectConverter.toProjectResponseList(projectList);
     }
 
     public List<ProjectResponse> findUserProjects() {
-        var currentUser = userService.getCurrentUserData();
-        var allUserProjects = projectRepository.findByUser(currentUser);
+        var user = userService.getCurrentUser();
+        var allUserProjects = projectRepository.findByUser(user);
         var projectList = allUserProjects.stream()
                 .filter(project -> !project.isDeleted())
                 .toList();
@@ -46,12 +46,12 @@ public class ProjectService {
     }
 
     public Optional<ProjectResponse> updateProject(ProjectRequest projectRequest) {
-        var currentUser = userService.getCurrentUserData();
-        var project = projectConverter.toProject(currentUser.getId(), projectRequest);
+        var user = userService.getCurrentUser();
+        var project = projectConverter.toProject(user.getId(), projectRequest);
         Optional<Project> foundProject = projectRepository.findById(project.getId());
         var toBeUpdatedproject = foundProject.get();
 
-        if (!belongToUser(currentUser.getId(), toBeUpdatedproject.getUser().getId()))
+        if (!belongToUser(user.getId(), toBeUpdatedproject.getUser().getId()))
             throw new UnauthorizedProjectResourceException(Constants.UNAUTHORIZED_PROJECT);
 
         BeanUtils.copyProperties(project, toBeUpdatedproject, "id");
@@ -61,10 +61,10 @@ public class ProjectService {
     }
 
     public boolean deleteProject(Long projectId) {
-        var current = userService.getCurrentUserData();
+        var user = userService.getCurrentUser();
         Optional<Project> foundProject = projectRepository.findById(projectId);
         var toBeDeletedproject = foundProject.get();
-        if (!belongToUser(current.getId(), toBeDeletedproject.getUser().getId()))
+        if (!belongToUser(user.getId(), toBeDeletedproject.getUser().getId()))
             throw new UnauthorizedProjectResourceException(Constants.UNAUTHORIZED_PROJECT);
 
         var project = foundProject.get();
@@ -72,7 +72,7 @@ public class ProjectService {
         return project.isDeleted();
     }
 
-    private boolean belongToUser(Long currentUserId, Long userIdProject) {
-        return currentUserId == userIdProject;
+    private static boolean belongToUser(Long userIdReceived, Long userIdProject) {
+        return userIdReceived == userIdProject;
     }
 }
