@@ -44,6 +44,7 @@ public class ProjectDtoConverter {
         projectResponse.setId(project.getId());
         projectResponse.setTitle(project.getTitle());
         projectResponse.setDescription(project.getDescription());
+        projectResponse.setLink(project.getLink());
         projectResponse.setImageProject(project.getImageProject());
         projectResponse.setTags(project.getTags());
         projectResponse.setUser(userResponse);

@@ -14,48 +14,48 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static br.com.fcamara.apiorangejuice.api.utils.Constants.*;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/project")
+@RequestMapping(PROJECT_CONTROLLER_MAPPING_ROUTE)
 public class ProjectController {
 
     private final ProjectService projectService;
 
-    @PostMapping("/{userId}")
-    @CacheEvict(value = "userProjectsCache", allEntries = true)
-    public ResponseEntity<ProjectResponse> saveProject(@PathVariable Long userId,
-                                                       @Valid @RequestBody ProjectRequest projectRequest) {
-        var savedProject = projectService.saveProject(userId, projectRequest);
+    @PostMapping
+    @CacheEvict(value = USER_PROJECTS_CACHE, allEntries = true)
+    public ResponseEntity<ProjectResponse> saveProject(@Valid @RequestBody ProjectRequest projectRequest) {
+        var savedProject = projectService.saveProject(projectRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProjectResponse>> findProjects() {
-        var projectList = projectService.findProjects();
+    @GetMapping(GET_ALL_PROJECTS_ROUTE)
+    public ResponseEntity<List<ProjectResponse>> findAllProjects() {
+        var projectList = projectService.findAllProjects();
         return ResponseEntity.status(HttpStatus.OK).body(projectList);
     }
 
-    @GetMapping("/{userId}")
-    @Cacheable(value = "userProjectsCache", key = "#userId")
-    public ResponseEntity<List<ProjectResponse>> findUserProjects(@PathVariable Long userId) {
-        var userProjects = projectService.findUserProjects(userId);
+    @GetMapping
+    @Cacheable(value = USER_PROJECTS_CACHE)
+    public ResponseEntity<List<ProjectResponse>> findUserProjects() {
+        var userProjects = projectService.findUserProjects();
         return ResponseEntity.status(HttpStatus.OK).body(userProjects);
     }
 
-    @PutMapping("/{userId}")
-    @CachePut(value = "userProjectsCache")
-    public ResponseEntity<ProjectResponse> updateProject(@PathVariable Long userId,
-                                                         @Valid @RequestBody ProjectRequest projectRequest) {
-        var updatedProject = projectService.updateProject(userId, projectRequest);
+    @PutMapping
+    @CachePut(value = USER_PROJECTS_CACHE)
+    public ResponseEntity<ProjectResponse> updateProject(@RequestBody ProjectRequest projectRequest) {
+        var updatedProject = projectService.updateProject(projectRequest);
         return updatedProject.map(
-                        projectResponse -> ResponseEntity.status(HttpStatus.OK).body(projectResponse))
+                projectResponse -> ResponseEntity.status(HttpStatus.OK).body(projectResponse))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.CONFLICT).build());
     }
 
-    @DeleteMapping("/{userId}/{projectId}")
-    @CachePut(value = "userProjectsCache")
-    public ResponseEntity deleteProject(@PathVariable Long userId, @PathVariable Long projectId) {
-        var response = projectService.deleteProject(userId, projectId);
+    @DeleteMapping(DELETE_PROJECT_ROUTE)
+    @CachePut(value = USER_PROJECTS_CACHE)
+    public ResponseEntity deleteProject(@PathVariable Long projectId) {
+        var response = projectService.deleteProject(projectId);
         if (!response) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

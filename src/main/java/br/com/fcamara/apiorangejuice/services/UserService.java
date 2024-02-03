@@ -2,13 +2,15 @@ package br.com.fcamara.apiorangejuice.services;
 
 import br.com.fcamara.apiorangejuice.api.dtos.user.UserRequest;
 import br.com.fcamara.apiorangejuice.api.dtos.user.UserResponse;
+import br.com.fcamara.apiorangejuice.api.utils.Constants;
 import br.com.fcamara.apiorangejuice.api.utils.converters.UserDtoConverter;
 import br.com.fcamara.apiorangejuice.domain.entities.User;
 import br.com.fcamara.apiorangejuice.exceptions.businessexceptions.UserAlreadyRegisteredException;
 import br.com.fcamara.apiorangejuice.exceptions.businessexceptions.UserNotFoundException;
 import br.com.fcamara.apiorangejuice.repositories.UserRepository;
-import br.com.fcamara.apiorangejuice.api.utils.Constants;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,9 +37,10 @@ public class UserService {
         return converter.toUserResponse(savedUser);
     }
 
-    public Optional<User> findById(Long userId) {
-        var foundUser = userRepository.findById(userId);
-        if(foundUser.isEmpty())
+    public Optional<User> findById(Long id) {
+        var currentUser = userRepository.findById(id);
+        var foundUser = userRepository.findById(currentUser.get().getId());
+        if (foundUser.isEmpty())
             throw new UserNotFoundException(Constants.USER_NOT_FOUND);
 
         return foundUser;
@@ -49,5 +52,15 @@ public class UserService {
 
     private String encrypt(String password) {
         return new BCryptPasswordEncoder().encode(password);
+    }
+
+    public User getCurrentUser() {
+        Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = null;
+        if (currentAuth.isAuthenticated()) {
+            var userDetails = (UserDetails) currentAuth.getPrincipal();
+            currentUser = (User) userDetails;
+        }
+        return currentUser;
     }
 }

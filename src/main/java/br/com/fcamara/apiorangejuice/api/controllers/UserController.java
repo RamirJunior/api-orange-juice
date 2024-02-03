@@ -17,26 +17,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static br.com.fcamara.apiorangejuice.api.utils.Constants.*;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping(USER_CONTROLLER_MAPPING_ROUTE)
 public class UserController {
 
     private final UserService userService;
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
 
-    @PostMapping("/register")
+    @PostMapping(POST_USER_REGISTER_ROUTE)
     public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRequest userRequest) {
         UserResponse savedUser = userService.register(userRequest);
         if (savedUser == null) return ResponseEntity.status(HttpStatus.CONFLICT).build();
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
-    @PostMapping("/login")
+    @PostMapping(POST_USER_LOGIN_ROUTE)
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         var usernamePassword = tokenService.getAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
         var auth = authenticationManager.authenticate(usernamePassword);
+
         var token = tokenService.createToken((User) auth.getPrincipal());
         return ResponseEntity.status(HttpStatus.OK).body(token);
     }
