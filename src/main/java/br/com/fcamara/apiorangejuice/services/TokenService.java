@@ -1,6 +1,7 @@
 package br.com.fcamara.apiorangejuice.services;
 
-import br.com.fcamara.apiorangejuice.api.dtos.login.LoginResponse;
+import br.com.fcamara.apiorangejuice.api.dtos.login.SuccessLoginResponse;
+import br.com.fcamara.apiorangejuice.api.dtos.login.TokenUser;
 import br.com.fcamara.apiorangejuice.domain.entities.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -23,14 +24,14 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String key;
 
-    public LoginResponse createToken(User user) {
+    public SuccessLoginResponse createToken(User user) {
         try {
             var token = JWT.create()
                     .withIssuer(API_ISSUER)
                     .withSubject(user.getEmail())
                     .withExpiresAt(getExpirationTime())
                     .sign(getAlgorithm());
-            return new LoginResponse(token);
+            return createLoginResponse(user, token);
 
         } catch (JWTCreationException exception) {
             throw new RuntimeException(ERROR_JWT_CREATION_MESSAGE);
@@ -50,12 +51,25 @@ public class TokenService {
         }
     }
 
+    private Instant getExpirationTime() {
+        return LocalDateTime.now().plusMinutes(30).toInstant(ZoneOffset.of("-03:00"));
+    }
+
     private Algorithm getAlgorithm() {
         return Algorithm.HMAC256(key);
     }
 
-    private Instant getExpirationTime() {
-        return LocalDateTime.now().plusMinutes(30).toInstant(ZoneOffset.of("-03:00"));
+    private SuccessLoginResponse createLoginResponse(User user, String token) {
+        var tokenUser = getTokenUser(user);
+        return new SuccessLoginResponse(true, token, tokenUser);
+    }
+
+    private static TokenUser getTokenUser(User user) {
+        var tokenUser = new TokenUser();
+        tokenUser.setId(user.getId());
+        tokenUser.setUsername(user.getFirstname());
+        tokenUser.setEmail(user.getEmail());
+        return tokenUser;
     }
 
     public UsernamePasswordAuthenticationToken getAuthenticationToken(String email, String password) {
