@@ -15,7 +15,6 @@ public class Constants {
     public static final String PROJECT_CONTROLLER_MAPPING_ROUTE = "/project";
     public static final String GET_ALL_PROJECTS_ROUTE = "/all";
     public static final String DELETE_PROJECT_ROUTE = "/{projectId}";
-    public static final String USER_PROJECTS_CACHE = "userProjectsCache";
 
     // Exception or validation messages
     public static final String EMAIL_REGISTERED = "Email already registered.";
