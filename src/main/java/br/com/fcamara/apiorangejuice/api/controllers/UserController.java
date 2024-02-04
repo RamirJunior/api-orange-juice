@@ -1,7 +1,7 @@
 package br.com.fcamara.apiorangejuice.api.controllers;
 
 import br.com.fcamara.apiorangejuice.api.dtos.login.LoginRequest;
-import br.com.fcamara.apiorangejuice.api.dtos.login.LoginResponse;
+import br.com.fcamara.apiorangejuice.api.dtos.login.SuccessLoginResponse;
 import br.com.fcamara.apiorangejuice.api.dtos.user.UserRequest;
 import br.com.fcamara.apiorangejuice.api.dtos.user.UserResponse;
 import br.com.fcamara.apiorangejuice.domain.entities.User;
@@ -36,10 +36,9 @@ public class UserController {
     }
 
     @PostMapping(POST_USER_LOGIN_ROUTE)
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<SuccessLoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         var usernamePassword = tokenService.getAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
         var auth = authenticationManager.authenticate(usernamePassword);
-
         var token = tokenService.createToken((User) auth.getPrincipal());
         return ResponseEntity.status(HttpStatus.OK).body(token);
     }
