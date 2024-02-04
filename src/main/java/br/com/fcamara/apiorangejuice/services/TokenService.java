@@ -2,11 +2,13 @@ package br.com.fcamara.apiorangejuice.services;
 
 import br.com.fcamara.apiorangejuice.api.dtos.login.SuccessLoginResponse;
 import br.com.fcamara.apiorangejuice.api.dtos.login.TokenUser;
+import br.com.fcamara.apiorangejuice.api.utils.converters.UserDtoConverter;
 import br.com.fcamara.apiorangejuice.domain.entities.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,10 @@ import static br.com.fcamara.apiorangejuice.api.utils.Constants.API_ISSUER;
 import static br.com.fcamara.apiorangejuice.api.utils.Constants.ERROR_JWT_CREATION_MESSAGE;
 
 @Service
+@RequiredArgsConstructor
 public class TokenService {
+
+    private final UserDtoConverter converter;
 
     @Value("${api.security.token.secret}")
     private String key;
@@ -60,16 +65,8 @@ public class TokenService {
     }
 
     private SuccessLoginResponse createLoginResponse(User user, String token) {
-        var tokenUser = getTokenUser(user);
-        return new SuccessLoginResponse(true, token, tokenUser);
-    }
-
-    private static TokenUser getTokenUser(User user) {
-        var tokenUser = new TokenUser();
-        tokenUser.setId(user.getId());
-        tokenUser.setUsername(user.getFirstname());
-        tokenUser.setEmail(user.getEmail());
-        return tokenUser;
+        var userResponse = converter.toUserResponse(user);
+        return new SuccessLoginResponse(true, token, userResponse);
     }
 
     public UsernamePasswordAuthenticationToken getAuthenticationToken(String email, String password) {
