@@ -1,7 +1,6 @@
 package br.com.fcamara.apiorangejuice.services;
 
 import br.com.fcamara.apiorangejuice.api.dtos.login.SuccessLoginResponse;
-import br.com.fcamara.apiorangejuice.api.dtos.login.TokenUser;
 import br.com.fcamara.apiorangejuice.api.utils.converters.UserDtoConverter;
 import br.com.fcamara.apiorangejuice.domain.entities.User;
 import com.auth0.jwt.JWT;

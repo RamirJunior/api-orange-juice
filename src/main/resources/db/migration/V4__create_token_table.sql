@@ -1,4 +1,0 @@
-CREATE TABLE tokens (
-    id UUID PRIMARY KEY,
-    token VARCHAR(255) NOT NULL
-);
