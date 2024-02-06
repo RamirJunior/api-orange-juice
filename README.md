@@ -1,61 +1,115 @@
-# Hackathon Api Orange Juice Backend 🍊
+# 🍊 API Orange Juice - Backend
 
-This is the README for the Hackathon Api Orange Juice Backend, a Java Spring-based application designed to support and manage an online portfolio.
-This backend component is responsible for handling various operations, such as user authentication, exam management, result processing, and more.
+O Orange Portfolio foi desenvolvido durante o Hackathon, a última fase final do processo seletivo da Fcamara, na quinta edição do programa. O backend do projeto desenvolvido em Java com o framework Spring Boot seguindo a arquitetura MVC. A API gerencia usuários e projetos, fornecendo endpoints para registro, autenticação, criação, atualização, exclusão e busca de projetos.
 
-## Contents
+## 🛠️ Tecnologias Utilizadas
 
-- [Introduction](#introduction)
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
-- [API Endpoints](#api-endpoints)
+- Java
+- Spring Boot
+- Spring Security com autenticação JWT
+- Lombok
+- JPA
+- Flyway
+- Validation
+- Java JWT
+- PostgreSQL
+- AWS (EC2 para hospedagem remota)
 
-## Introduction
+## 📁 Estrutura do Projeto
 
-Description of backend service provides.
+O projeto segue a arquitetura MVC (Model-View-Controller) para uma organização clara e modular do código. Consiste em entidades Java que representam os usuários e projetos, além de DTOs (Data Transfer Objects) para transferência de dados entre o frontend e o backend. Aqui está uma visão geral das entidades e seus DTOs correspondentes:
 
-## Features
+### 🧑‍💼 Entidades
 
-- User authentication and authorization.
--
+#### User
 
-## Prerequisites
+Representa um usuário da aplicação.
 
-Before you begin, ensure you have met the following requirements:
+- Campos:
+   - id
+   - firstname
+   - lastname
+   - email
+   - password
+   - profileImageAddress
+   - role
 
-- Java Development Kit (JDK) 17 or later.
--
+#### Project
 
-## Getting Started
+Representa um projeto criado por um usuário.
 
-Steps for run the project:
+- Campos:
+   - id
+   - title
+   - description
+   - link
+   - imageProject
+   - tags
+   - deleted
+   - user
+   - createdAt
 
-1. Clone this repository to your local machine:
+### 📝 DTOs
 
-   ```bash
-   git clone https://github.com/your-username/link-project.git
-   ```
-2. Open the project in your preferred IDE.
-3. Configure the database connection in `src/main/resources/application.properties`.
-4. Build and run the application.
+- ProjectRequest
+- ProjectResponse
+- UserRequest
+- UserResponse
+- FailLoginResponse
+- LoginRequest
+- SuccessLoginResponse
 
-   ```bash
-   mvn spring-boot:run
-   ```
+## 🎮 Controllers
 
-The backend should now be up and running, ready to handle exam-related operations.
+Existem dois controladores principais:
 
-## API Endpoints
+### UserController
 
-The API endpoints are documented using the OpenAPI (Swagger) specification. You can access the API documentation by visiting:
+Controla operações relacionadas a usuários, como registro e autenticação.
 
-```
-http://localhost:8080/swagger-ui.html
-```
+### ProjectController
 
-This interactive documentation provides details on available endpoints, request payloads, and responses.
+Controla operações relacionadas a projetos, como criação, atualização, exclusão e busca.
+
+## 📚 Documentação
+
+A documentação da API é gerada utilizando o Swagger, fornecendo uma interface interativa para explorar os endpoints disponíveis, bem como suas descrições e requisitos de segurança.
+
+## 🔗 Endpoints
+
+- **POST /api/register**: Registra um novo usuário.
+- **POST /api/login**: Autentica um usuário e gera um token de acesso.
+- **POST /api/projects**: Salva um novo projeto para um usuário.
+- **GET /api/projects**: Busca todos os projetos cadastrados.
+- **GET /api/projects/user**: Busca todos os projetos do usuário por ID.
+- **PUT /api/projects**: Atualiza um projeto existente.
+- **DELETE /api/projects/{projectId}**: Exclui um projeto.
+
+Todos os endpoints exigem autenticação com um token JWT no cabeçalho da requisição.
+
+## Tratamento de Exceções
+
+Exceções são tratadas de forma adequada em todo o código, garantindo uma experiência de usuário consistente e robusta.
+
+## Deleção Lógica Implementada
+
+A deleção lógica foi implementada para garantir que os registros excluídos não sejam removidos permanentemente, mantendo a integridade dos dados.
 
 ---
+## Desenvolvido por:
 
-If you have any questions or encounter any issues, please don't hesitate to [contact us](mailto:contact@example.com).
+## Participantes
+
+| Nome          | Função   | Github                                                                                                               | Foto                                                                                                                                       |
+| ------------- | -------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Felipe Silva  | Frontend | [![GitHub](https://img.shields.io/badge/-GitHub-black.svg?logo=github&style=flat)](https://github.com/felipel7)      | <img src="https://avatars.githubusercontent.com/u/14916843?s=400&u=f1a2b4919c60d51eba5b1a7736a467f88ff050ee&v=4" height="75" width="75" /> |
+| Marcos        | Frontend | [![GitHub](https://img.shields.io/badge/-GitHub-black.svg?logo=github&style=flat)](https://github.com/marcosrsalles) | <img src="https://avatars.githubusercontent.com/u/64453305?v=4" height="75" width="75" />                                                  |
+| Fhelipe Alves | Backend  | [![GitHub](https://img.shields.io/badge/-GitHub-black.svg?logo=github&style=flat)](https://github.com/fhelipe27)     | <img src="https://avatars.githubusercontent.com/u/68212163?v=4" height="75" width="75" />                                                  |
+| Ramir Junior  | Backend  | [![GitHub](https://img.shields.io/badge/-GitHub-black.svg?logo=github&style=flat)](https://github.com/RamirJunior)   | <img src="https://avatars.githubusercontent.com/u/26365419?v=4" height="75" width="75" />                                                  |
+
+<br/>
+<br/>
+
+## 📝 License
+
+Este projeto está sob a licença MIT. Consulte o [LICENSE](LICENSE) para obter mais detalhes.
